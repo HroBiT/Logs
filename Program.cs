@@ -308,7 +308,7 @@ class Program
         return firstTerm * Math.Pow(commonRatio, n - 1);
     }
 
-    static double CalculateArithmetic(double firstTerm, double commonDiff, int n) // pierwsza liczba , roznica , n - stala
+    static double CalculateArithmetic(double firstTerm, double commonDiff, int n) // pierwsza liczba , roznica , index 
     {
         return firstTerm + (n - 1) * commonDiff;
     }
@@ -319,7 +319,7 @@ class Program
 
         for (int i = 2; i <= elements.Count; i++)
         {
-            if (elements[i - 1] != CalculateArithmetic(elements[0], commonDiff, i))
+            if (elements[i - 1] != CalculateArithmetic(elements[0], commonDiff, i)) // porownanie wszystkiego z artmetycznoscia
                 return false;
         }
 
@@ -332,7 +332,7 @@ class Program
 
         for (int i = 2; i <= elements.Count; i++)
         { 
-            if (elements[i - 1] != CalculateGeometric(elements[0], commonRatio, i))
+            if (elements[i - 1] != CalculateGeometric(elements[0], commonRatio, i)) // porownanie wszystkiego z geometrycznoscia
                 return false; // czy jest staly zeby gemetrycznosc sprawdzic
         }
 
