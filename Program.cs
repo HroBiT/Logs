@@ -15,7 +15,7 @@ class Program
 
             if (!int.TryParse(Console.ReadLine(), out int choice))
             {
-                Console.WriteLine("Niepoprawny wybor sprobuj ponownie.");
+                Console.WriteLine("cos nie tak");
                 continue;
             }
 
@@ -31,7 +31,7 @@ class Program
                     Environment.Exit(0);
                     break;
                 default:
-                    Console.WriteLine("Niepoprawny wybor sprobuj ponownie.");
+                    Console.WriteLine("cos nie tak");
                     break;
             }
         }
@@ -48,7 +48,7 @@ class Program
 
         if (!int.TryParse(Console.ReadLine(), out int choice))
         {
-            Console.WriteLine("Niepoprawny wybor, sprobuj ponownie.");
+            Console.WriteLine("cos nie tak");
             return;
         }
 
@@ -67,7 +67,7 @@ class Program
                 FindXFromLogBase();
                 break;
             default:
-                Console.WriteLine("Niepoprawny wybor, sprobuj ponownie.");
+                Console.WriteLine("cos nie tak");
                 break;
         }
     }
@@ -80,7 +80,7 @@ class Program
 
         if (!TryParseLogarithm(input, out double result))
         {
-            Console.WriteLine("Niepoprawne wyrażenie logarytmiczne, sprobuj ponownie.");
+            Console.WriteLine("cos nie tak");
             Console.ReadLine();
             return;
         }
@@ -97,7 +97,7 @@ class Program
 
         if (!TryParseLogarithmOperation(input, out double result))
         {
-            Console.WriteLine("Niepoprawne wyrażenie logarytmiczne. Sprobuj ponownie.");
+            Console.WriteLine("cos nie tak");
             Console.ReadLine();
             return;
         }
@@ -121,7 +121,7 @@ class Program
         }
         else
         {
-            Console.WriteLine("Niepoprawne równanie, sprobuj ponownie.");
+            Console.WriteLine("cos nie tak");
         }
         Console.ReadLine();
     }
@@ -141,7 +141,7 @@ class Program
         }
         else
         {
-            Console.WriteLine("Niepoprawne równanie, sprobuj ponownie.");
+            Console.WriteLine("cos nie tak");
         }
         Console.ReadLine();
     }
@@ -214,7 +214,7 @@ class Program
 
         if (!int.TryParse(Console.ReadLine(), out int length) || length <= 0)
         {
-            Console.WriteLine("Niepoprawna długosc ciągu. Sprobuj ponownie");
+            Console.WriteLine("cos nie tak");
             Console.ReadLine();
             return;
         }
@@ -227,7 +227,7 @@ class Program
             Console.Write($"{i} = ");
             if (!double.TryParse(Console.ReadLine(), out double v))
             {
-                Console.WriteLine("Niepoprawna wartosc. Sprobuj ponownie");
+                Console.WriteLine("cos nie tak");
                 i--; // powrot do ciagu zeby nie bylo nie poprawnosci
                 continue; // jezeli git to dalej
             }
