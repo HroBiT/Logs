@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 class Program
@@ -10,7 +10,7 @@ class Program
             Console.Clear();
             Console.WriteLine("Wybierz co chcesz zrobic:");
             Console.WriteLine("1. Obliczenia logarytmiczne");
-            Console.WriteLine("2. Operacje na ciągach");
+            Console.WriteLine("2. Operacje na ciagach");
             Console.WriteLine("3. Wyjdz z programu");
 
             if (!int.TryParse(Console.ReadLine(), out int choice))
@@ -101,25 +101,25 @@ class Program
     static bool TryParseLogarithm(string expression, out double result)
     {
         result = 0.0;
-        string[] parts = expression.Split(new[] { '(', ')' }, StringSplitOptions.RemoveEmptyEntries);
+        string[] parts = expression.Split(new[] { '(', ')' }, StringSplitOptions.RemoveEmptyEntries); //dzielimy wyrazenie zeby wyszedl logarytm  
 
-        if (parts.Length != 2)
+        if (parts.Length != 2) // poprawnosc logarytmu
             return false;
 
-        if (double.TryParse(parts[1], out double number))
+        if (double.TryParse(parts[1], out double number)) // sprawdzenie czy 2 czesc log moze byc number
         {
-            if (parts[0].StartsWith("log_"))
+            if (parts[0].StartsWith("log_")) // czy pierwsza to log_
             {
-                if (double.TryParse(parts[0].Substring(4), out double baseNumber))
+                if (double.TryParse(parts[0].Substring(4), out double baseNumber))  // i tutaj jak cos przy log to dajemy w badsenumber
                 {
-                    result = Math.Log(number, baseNumber);
-                    return true;
+                    result = Math.Log(number, baseNumber); 
+                    return true; // logarytm
                 }
             }
             else if (parts[0].Equals("log", StringComparison.OrdinalIgnoreCase))
             {
                 result = Math.Log(number);
-                return true;
+                return true; //logarytm ale jezeli jest tylko log
             }
         }
 
@@ -129,12 +129,12 @@ class Program
     static bool TryParseLogarithmOperation(string expression, out double result)
     {
         result = 0.0;
-        string[] parts = expression.Split(new[] { '+', '-', '*', '/' }, StringSplitOptions.RemoveEmptyEntries);
+        string[] parts = expression.Split(new[] { '+', '-', '*', '/' }, StringSplitOptions.RemoveEmptyEntries); //dzieli na czesci
 
         if (parts.Length != 2)
-            return false;
+            return false; // obsluga bledu 
 
-        if (TryParseLogarithm(parts[0].Trim(), out double result1) &&
+        if (TryParseLogarithm(parts[0].Trim(), out double result1) && // jezeli sie wszystko powiedzie w tryprasach to wtedy wyniki wchodza w resulty
             TryParseLogarithm(parts[1].Trim(), out double result2))
         {
             if (expression.Contains("+"))
@@ -161,90 +161,88 @@ class Program
 
     static void CalculateSequence()
     {
-        Console.Clear();
-        Console.WriteLine("Podaj długośc ciągu:");
+       Console.Clear();
+       Console.WriteLine("Podaj długosc ciagu:");
 
         if (!int.TryParse(Console.ReadLine(), out int length) || length <= 0)
         {
-            Console.WriteLine("Niepoprawna długośc ciągu. Sprobuj ponownie.");
+            Console.WriteLine("Niepoprawna długosc ciagu. Sprobuj ponownie");
             Console.ReadLine();
             return;
         }
-        Console.WriteLine("Podaj elementy ciągu:");
-        Dictionary<int, double> elements = new Dictionary<int, double>();
+
+        Console.WriteLine("Podaj elementy ciagu:");
+       List<double> elementy = new List<double>();
 
         for (int i = 1; i <= length; i++)
         {
             Console.Write($"{i} = ");
             if (!double.TryParse(Console.ReadLine(), out double value))
             {
-                Console.WriteLine("Niepoprawna wartośc. Sprobuj ponownie.");
-                i--;
-                continue;
+                Console.WriteLine("Niepoprawna wartosc. Sprobuj ponownie");
+                i--; // powrot do ciagu zeby nie bylo nie poprawnosci
+                continue; // jezeli git to dalej
             }
-            elements.Add(i, value);
+            elementy.Add(value);
         }
-
-        CalculateAndPrintSequence(elements);
-        Console.ReadLine();
+       CalculateAndPrintSequence(elementy); //wyswietalnie po wszystkim 
     }
 
-    static void CalculateAndPrintSequence(Dictionary<int, double> elements)
+
+    static void CalculateAndPrintSequence(List<double> elements)
     {
-        string sequenceType = GetSequenceType(elements);
-        string monotonicity = GetMonotonicity(elements);
-
-        Console.WriteLine($"Typ ciągu: {sequenceType}");
-        Console.WriteLine($"Monotonicznośc ciągu: {monotonicity}");
-
-        Console.WriteLine("Podaj numer indeksu (n) elementu ktorego wartośc chcesz poznac:");
-        if (!int.TryParse(Console.ReadLine(), out int index) || index < 1)
+        string sequenceType = GetSequenceType(elements); // wynik
+        string monotonicity = GetMonotonicity(elements);//wynik 
+       Console.WriteLine($"Typ ciagu: {sequenceType}");
+       Console.WriteLine($"Monotonicznosc ciagu: {monotonicity}");
+        
+      Console.WriteLine("Podaj numer indeksu (n) elementu, ktorego wartosc chcesz poznac:");
+        if (!int.TryParse(Console.ReadLine(), out int index) || index < 1 || index > elements.Count)
         {
             Console.WriteLine("Niepoprawny numer indeksu. Sprobuj ponownie.");
             return;
         }
 
         double value = CalculateElementValue(elements, index, sequenceType);
-        Console.WriteLine($"Wartośc elementu indeksu {index} wynosi {value}");
+        Console.WriteLine($"Wartosc elementu o indeksie {index} wynosi {value}");
     }
 
-    static double CalculateElementValue(Dictionary<int, double> elements, int index, string sequenceType)
+    static double CalculateElementValue(List<double> elements, int index, string sequenceType)
     {
-        double firstTerm = elements[1];
-
-        if (sequenceType == "arytmetyczny")
-        {
-            double commonDifference = elements[2] - elements[1];
+       double firstTerm = elements[0];
+       if (sequenceType == "arytmetyczny")
+       {
+            double commonDifference = elements[1] - elements[0];
             return CalculateArithmetic(firstTerm, commonDifference, index);
-        }
+       }
         else if (sequenceType == "geometryczny")
         {
-            double commonRatio = elements[2] / elements[1];
+            double commonRatio = elements[1] / elements[0]; 
             return CalculateGeometric(firstTerm, commonRatio, index);
         }
         else
         {
-            return elements.ContainsKey(index) ? elements[index] : double.NaN;
+            return elements[index - 1]; 
         }
     }
 
-    static double CalculateCommonDifference(Dictionary<int, double> elements)
+    static double CalculateCommonDifference(List<double> elements)
     {
         if (elements.Count < 2)
             return 0.0;
 
-        return elements[2] - elements[1];
+        return elements[1] - elements[0];
     }
 
-    static double CalculateCommonRatio(Dictionary<int, double> elements)
+    static double CalculateCommonRatio(List<double> elements)
     {
-        if (elements.Count < 2)
+        if (elements.Count < 2 || elements[0] == 0)
             return 0.0;
 
-        return elements[2] / elements[1];
+        return elements[1] / elements[0];
     }
 
-    static string GetSequenceType(Dictionary<int, double> elements)
+    static string GetSequenceType(List<double> elements)
     {
         bool isArithmetic = CheckArithmeticSequence(elements);
         bool isGeometric = CheckGeometricSequence(elements);
@@ -267,38 +265,38 @@ class Program
         return firstTerm + (n - 1) * commonDifference;
     }
 
-    static bool CheckArithmeticSequence(Dictionary<int, double> elements)
+    static bool CheckArithmeticSequence(List<double> elements)
     {
         double commonDifference = CalculateCommonDifference(elements);
 
         for (int i = 2; i <= elements.Count; i++)
         {
-            if (elements[i] != CalculateArithmetic(elements[1], commonDifference, i))
+            if (elements[i - 1] != CalculateArithmetic(elements[0], commonDifference, i))
                 return false;
         }
 
         return true;
     }
 
-    static bool CheckGeometricSequence(Dictionary<int, double> elements)
+    static bool CheckGeometricSequence(List<double> elements)
     {
         double commonRatio = CalculateCommonRatio(elements);
 
         for (int i = 2; i <= elements.Count; i++)
         {
-            if (elements[i] != CalculateGeometric(elements[1], commonRatio, i))
+            if (elements[i - 1] != CalculateGeometric(elements[0], commonRatio, i))
                 return false;
         }
 
         return true;
     }
 
-    static string GetMonotonicity(Dictionary<int, double> elements)
+    static string GetMonotonicity(List<double> elements)
     {
         bool isIncreasing = true;
         bool isDecreasing = true;
 
-        for (int i = 2; i <= elements.Count; i++)
+        for (int i = 1; i < elements.Count; i++)
         {
             if (elements[i] > elements[i - 1])
                 isDecreasing = false;
@@ -307,10 +305,10 @@ class Program
         }
 
         if (isIncreasing)
-            return "rosnący";
+            return "rosnacy";
         else if (isDecreasing)
-            return "malejący";
+            return "malejacy";
         else
-            return "niemonotoniczny";
+            return "nie monotoniczny";
     }
 }
