@@ -43,6 +43,8 @@ class Program
         Console.WriteLine("Wybierz rodzaj obliczeń logarytmicznych:");
         Console.WriteLine("1. Proste logarytmy");
         Console.WriteLine("2. Działania na logarytmach");
+        Console.WriteLine("3. Znajdz np. log_2(x)=4");
+        Console.WriteLine("4. Znajdz np. log_x(16)=4");
 
         if (!int.TryParse(Console.ReadLine(), out int choice))
         {
@@ -58,6 +60,12 @@ class Program
             case 2:
                 CalculateLogarithmOperations();
                 break;
+            case 3:
+                FindXFromLogEquation();
+                break;
+            case 4:
+                FindXFromLogBase();
+                break;
             default:
                 Console.WriteLine("Niepoprawny wybor, sprobuj ponownie.");
                 break;
@@ -72,7 +80,7 @@ class Program
 
         if (!TryParseLogarithm(input, out double result))
         {
-            Console.WriteLine("Niepoprawne wyrażenie logarytmiczne. Sprobuj ponownie.");
+            Console.WriteLine("Niepoprawne wyrażenie logarytmiczne, sprobuj ponownie.");
             Console.ReadLine();
             return;
         }
@@ -98,6 +106,46 @@ class Program
         Console.ReadLine();
     }
 
+    static void FindXFromLogEquation()
+    {
+        Console.Clear();
+        Console.WriteLine("Podaj równanie w formacie log_b(x)=a (np. log_2(x)=4): ");
+        string input = Console.ReadLine().Trim();
+
+        string[] parts = input.Split(new[] { "log_", "(", ")", "=" }, StringSplitOptions.RemoveEmptyEntries);
+
+        if (parts.Length == 3 && double.TryParse(parts[0], out double baseNumber) && double.TryParse(parts[2], out double result)) // musi byc 3 
+        {
+            double x = Math.Pow(baseNumber, result); 
+            Console.WriteLine($"x = {x}");
+        }
+        else
+        {
+            Console.WriteLine("Niepoprawne równanie, sprobuj ponownie.");
+        }
+        Console.ReadLine();
+    }
+
+    static void FindXFromLogBase()
+    {
+        Console.Clear();
+        Console.WriteLine("Podaj równanie w formacie log_x(b)=a (np. log_x(16)=4): ");
+        string input = Console.ReadLine().Trim();
+
+        string[] parts = input.Split(new[] { "log_", "(", ")", "=" }, StringSplitOptions.RemoveEmptyEntries);  //dzieli wzgeledem log itd
+
+        if (parts.Length == 3 && double.TryParse(parts[1], out double number) && double.TryParse(parts[2], out double result))
+        {
+            double x = Math.Pow(number, 1 / result); // logika do sprawdzania
+            Console.WriteLine($"x = {x}");
+        }
+        else
+        {
+            Console.WriteLine("Niepoprawne równanie, sprobuj ponownie.");
+        }
+        Console.ReadLine();
+    }
+
     static bool TryParseLogarithm(string expression, out double result)
     {
         result = 0.0;
@@ -112,7 +160,7 @@ class Program
             {
                 if (double.TryParse(parts[0].Substring(4), out double baseNumber))  // i tutaj jak cos przy log to dajemy w badsenumber
                 {
-                    result = Math.Log(number, baseNumber); 
+                    result = Math.Log(number, baseNumber);
                     return true; // logarytm
                 }
             }
@@ -161,80 +209,80 @@ class Program
 
     static void CalculateSequence()
     {
-       Console.Clear();
-       Console.WriteLine("Podaj długosc ciagu:");
+        Console.Clear();
+        Console.WriteLine("Podaj długosc ciągu:");
 
         if (!int.TryParse(Console.ReadLine(), out int length) || length <= 0)
         {
-            Console.WriteLine("Niepoprawna długosc ciagu. Sprobuj ponownie");
+            Console.WriteLine("Niepoprawna długosc ciągu. Sprobuj ponownie");
             Console.ReadLine();
             return;
         }
 
-        Console.WriteLine("Podaj elementy ciagu:");
-       List<double> elementy = new List<double>();
+        Console.WriteLine("Podaj elementy ciągu:");
+        List<double> elementy = new List<double>();
 
         for (int i = 1; i <= length; i++)
         {
             Console.Write($"{i} = ");
-            if (!double.TryParse(Console.ReadLine(), out double value))
+            if (!double.TryParse(Console.ReadLine(), out double v))
             {
                 Console.WriteLine("Niepoprawna wartosc. Sprobuj ponownie");
                 i--; // powrot do ciagu zeby nie bylo nie poprawnosci
                 continue; // jezeli git to dalej
             }
-            elementy.Add(value);
+            elementy.Add(v);
         }
-       CalculateAndPrintSequence(elementy); //wyswietalnie po wszystkim 
+        SequencePrint(elementy); //wyswietalnie po wszystkim 
+        Console.ReadLine();
     }
 
-
-    static void CalculateAndPrintSequence(List<double> elements)
+    static void SequencePrint(List<double> elements)
     {
-        string sequenceType = GetSequenceType(elements); // wynik
-        string monotonicity = GetMonotonicity(elements);//wynik 
-       Console.WriteLine($"Typ ciagu: {sequenceType}");
-       Console.WriteLine($"Monotonicznosc ciagu: {monotonicity}");
-        
-      Console.WriteLine("Podaj numer indeksu (n) elementu, ktorego wartosc chcesz poznac:");
-        if (!int.TryParse(Console.ReadLine(), out int index) || index < 1 || index > elements.Count)
+        string sequenceType = GetSequenceType(elements);
+        string monotonicity = GetMonotonicity(elements);
+        Console.WriteLine($"Typ ciagu: {sequenceType}");
+        Console.WriteLine($"Monotonicznosc ciagu: {monotonicity}");
+
+        Console.WriteLine("Podaj numer indeksu (n) elementu, ktorego wartosc chcesz poznac:");
+        if (!int.TryParse(Console.ReadLine(), out int i) || i < 1 || i > elements.Count)
         {
             Console.WriteLine("Niepoprawny numer indeksu. Sprobuj ponownie.");
             return;
         }
 
-        double value = CalculateElementValue(elements, index, sequenceType);
-        Console.WriteLine($"Wartosc elementu o indeksie {index} wynosi {value}");
+        double v = Elements(elements, i, sequenceType);
+        Console.WriteLine($"Wartosc elementu o indeksie {i} wynosi {v}");
     }
 
-    static double CalculateElementValue(List<double> elements, int index, string sequenceType)
+    static double Elements(List<double> elements, int i, string sequenceType)
     {
-       double firstTerm = elements[0];
-       if (sequenceType == "arytmetyczny")
-       {
-            double commonDifference = elements[1] - elements[0];
-            return CalculateArithmetic(firstTerm, commonDifference, index);
-       }
+        double firstTerm = elements[0];
+        if (sequenceType == "arytmetyczny")
+        {
+            double commonDiff = elements[1] - elements[0];
+            return CalculateArithmetic(firstTerm, commonDiff, i);
+        }
         else if (sequenceType == "geometryczny")
         {
-            double commonRatio = elements[1] / elements[0]; 
-            return CalculateGeometric(firstTerm, commonRatio, index);
+            double commonRatio = elements[1] / elements[0];
+            return CalculateGeometric(firstTerm, commonRatio, i);
         }
         else
         {
-            return elements[index - 1]; 
+            return elements[i - 1];
         }
     }
 
-    static double CalculateCommonDifference(List<double> elements)
+    static double CommonDiff(List<double> elements)
     {
         if (elements.Count < 2)
             return 0.0;
 
-        return elements[1] - elements[0];
+        return elements[1] - elements[0];  // roznica z ciagu
     }
 
-    static double CalculateCommonRatio(List<double> elements)
+    static double CommonRatio(List<double> elements)
     {
         if (elements.Count < 2 || elements[0] == 0)
             return 0.0;
@@ -244,8 +292,8 @@ class Program
 
     static string GetSequenceType(List<double> elements)
     {
-        bool isArithmetic = CheckArithmeticSequence(elements);
-        bool isGeometric = CheckGeometricSequence(elements);
+        bool isArithmetic = CheckArithmSeq(elements);
+        bool isGeometric = CheckGeom(elements);
 
         if (isArithmetic)
             return "arytmetyczny";
@@ -260,32 +308,32 @@ class Program
         return firstTerm * Math.Pow(commonRatio, n - 1);
     }
 
-    static double CalculateArithmetic(double firstTerm, double commonDifference, int n)
+    static double CalculateArithmetic(double firstTerm, double commonDiff, int n) // pierwsza liczba , roznica , n - stala
     {
-        return firstTerm + (n - 1) * commonDifference;
+        return firstTerm + (n - 1) * commonDiff;
     }
 
-    static bool CheckArithmeticSequence(List<double> elements)
+    static bool CheckArithmSeq(List<double> elements)
     {
-        double commonDifference = CalculateCommonDifference(elements);
+        double commonDiff = CommonDiff(elements);
 
         for (int i = 2; i <= elements.Count; i++)
         {
-            if (elements[i - 1] != CalculateArithmetic(elements[0], commonDifference, i))
+            if (elements[i - 1] != CalculateArithmetic(elements[0], commonDiff, i))
                 return false;
         }
 
         return true;
     }
 
-    static bool CheckGeometricSequence(List<double> elements)
+    static bool CheckGeom(List<double> elements)
     {
-        double commonRatio = CalculateCommonRatio(elements);
+        double commonRatio = CommonRatio(elements);
 
         for (int i = 2; i <= elements.Count; i++)
-        {
+        { 
             if (elements[i - 1] != CalculateGeometric(elements[0], commonRatio, i))
-                return false;
+                return false; // czy jest staly zeby gemetrycznosc sprawdzic
         }
 
         return true;
@@ -296,7 +344,7 @@ class Program
         bool isIncreasing = true;
         bool isDecreasing = true;
 
-        for (int i = 1; i < elements.Count; i++)
+        for (int i = 1; i < elements.Count; i++) // Sprawdza monotonicznosc ciągu
         {
             if (elements[i] > elements[i - 1])
                 isDecreasing = false;
